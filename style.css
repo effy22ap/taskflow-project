@@ -3,7 +3,7 @@
     --primary-color: #6138adb2;
     --secondary-color-: #f5f7fa;
     --accent-color: #24a359;
-    --danger-color: #e74c3c;
+    --danger-color: #720a0a;
     --text-main: #2c3e50;
     --text-light: #7f8c8d;
     --white: #ffffff;
@@ -53,7 +53,7 @@ main {
     flex: 50; /* Ocupa más espacio que el aside */
 }
 
-/* 5. Panel lateral (ASIDE) FIJO */
+/* 5. Panel lateral (Aside) FIJO */
 aside {
     flex: 3;
     min-width: 250px;
@@ -137,4 +137,28 @@ footer {
     padding: 10px;
     color: var(--text-light);
     font-size: 0.9rem;
+}
+/* 7. Responsive design (Media Queries) */
+@media (max-width: 768px) {
+    main {
+        flex-direction: column; 
+        padding: 10px;
+    }
+
+    aside {
+        width: 100%; 
+        order: 2;    
+    }
+
+    #tasks-section {
+        order: 1;
+    }
+
+    #task-form {
+        flex-direction: column; 
+    }
+
+    button {
+        width: 100%;
+    }
 }
