@@ -13,6 +13,21 @@
         </header>
     <main>
         <div id="tasks-section">
+             <section id="controls">
+                <input type="text" id="search-input" placeholder="Buscar tarea..." oninput="renderTasks(this.value)">
+                
+                <div class="filter-buttons">
+                    <button onclick="currentFilter='all'; updateApp()">Todas</button>
+                    <button onclick="currentFilter='pending'; updateApp()">Pendientes</button>
+                    <button onclick="currentFilter='completed'; updateApp()">Completadas</button>
+                </div>
+
+                <div class="global-actions">
+                <button type="button" onclick="completeAll()" class="btn-all">Marcar todas</button>
+                <button type="button" onclick="clearCompleted()" class="btn-clear">Limpiar completadas</button>
+            </div>
+            </section>
+
             <section id="add-task">
                 <h2>Gestión de Tareas</h2>
                 <form id="task-form">
@@ -25,35 +40,6 @@
             <section id="tasks-container">
                 <h3>Lista de Tareas</h3>
                 <ul id="task-list">
-                    <li class="task-item">
-                        <span>Limpiar la casa</span>
-                        <div class="actions">
-                            <button class="complete-btn">Completar</button>
-                            <button class="delete-btn">Eliminar</button>
-                        </div>
-                    </li>
-                    <li class="task-item">
-                        <span>Entregar proyecto</span>
-                        <div class="actions">
-                            <button class="complete-btn">Completar</button>
-                            <button class="delete-btn">Eliminar</button>
-                        </div>
-                    </li>
-                    <li class="task-item">
-                        <span>Ir al Gym</span>
-                        <div class="actions">
-                            <button class="complete-btn">Completar</button>
-                            <button class="delete-btn">Eliminar</button>
-                        </div>
-                    </li>
-                    <li class="task-item">
-                        <span>Reunion de Empresa</span>
-                        <div class="actions">
-                            <button class="complete-btn">Completar</button>
-                            <button class="delete-btn">Eliminar</button>
-                        </div>
-                    </li>
-
                 </ul>
             </section>
         </div>
