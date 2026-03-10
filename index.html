@@ -12,60 +12,60 @@
            <h1>TaskFlow</h1>
         </header>
     <main>
-        <section id="add-task">
-            <h2>Gestión de Tareas</h2>
-            <form id="task-form">
-                <label for="task-input">Nueva tarea:</label>
-                <input type="text" id="task-input" placeholder="Escribe aqui" required>
-                <button type="submit">Añadir Tarea</button>
-            </form>
-        </section>
+        <div id="tasks-section">
+            <section id="add-task">
+                <h2>Gestión de Tareas</h2>
+                <form id="task-form">
+                    <label for="task-input">Nueva tarea:</label>
+                    <input type="text" id="task-input" placeholder="Escribe aqui" required>
+                    <button type="submit">Añadir Tarea</button>
+                </form>
+            </section>
 
-        <section id="tasks-container">
-            <h3>Lista de Tareas</h3>
-            <ul id="task-list">
-                <li class="task-item">
-                    <span>Limpiar la casa</span>
-                    <div class="actions">
-                        <button class="complete-btn">Completar</button>
-                        <button class="delete-btn">Eliminar</button>
-                    </div>
-                </li>
-                <li class="task-item">
-                    <span>Entregar proyecto</span>
-                    <div class="actions">
-                        <button class="complete-btn">Completar</button>
-                        <button class="delete-btn">Eliminar</button>
-                    </div>
-                </li>
-                <li class="task-item">
-                    <span>Ir al Gym</span>
-                    <div class="actions">
-                        <button class="complete-btn">Completar</button>
-                        <button class="delete-btn">Eliminar</button>
-                    </div>
-                </li>
-                <li class="task-item">
-                    <span>Reunion de Empresa</span>
-                    <div class="actions">
-                        <button class="complete-btn">Completar</button>
-                        <button class="delete-btn">Eliminar</button>
-                    </div>
-                </li>
+            <section id="tasks-container">
+                <h3>Lista de Tareas</h3>
+                <ul id="task-list">
+                    <li class="task-item">
+                        <span>Limpiar la casa</span>
+                        <div class="actions">
+                            <button class="complete-btn">Completar</button>
+                            <button class="delete-btn">Eliminar</button>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <span>Entregar proyecto</span>
+                        <div class="actions">
+                            <button class="complete-btn">Completar</button>
+                            <button class="delete-btn">Eliminar</button>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <span>Ir al Gym</span>
+                        <div class="actions">
+                            <button class="complete-btn">Completar</button>
+                            <button class="delete-btn">Eliminar</button>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <span>Reunion de Empresa</span>
+                        <div class="actions">
+                            <button class="complete-btn">Completar</button>
+                            <button class="delete-btn">Eliminar</button>
+                        </div>
+                    </li>
 
-            </ul>
-        </section>
-    </main>
-
-    <aside>
-        <h2> </h2>
-        <div>
-            <p>Total: <span id="stat-total">0</span></p>
-            <p>Completadas: <span id="stat-completed">0</span></p>
-            <p>Pendientes: <span id="stat-pending">0</span></p>
+                </ul>
+            </section>
         </div>
-    </aside>
-
+        <aside>
+                <h2> </h2>
+                <div>
+                    <p>Total: <span id="stat-total">0</span></p>
+                    <p>Completadas: <span id="stat-completed">0</span></p>
+                    <p>Pendientes: <span id="stat-pending">0</span></p>
+                </div>
+            </aside>
+    </main>
     <footer>
         <p>&copy; 2026 TaskFlow - Practicas Corner</p>
     </footer>
