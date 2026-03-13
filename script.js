@@ -119,3 +119,24 @@ taskForm.addEventListener('submit', (e) => {
 // Inicializar la app
 updateApp();
 
+//.7 Modo Oscuro
+const darkModeToggle = document.getElementById('dark-mode-toggle');
+const htmlElement = document.documentElement;
+
+// ver si ya estaba en modo oscuro al cargar
+if (localStorage.getItem('theme') === 'dark') {
+    htmlElement.classList.add('dark');
+}else {
+    document.documentElement.classList.remove('dark');
+}
+
+darkModeToggle.addEventListener('click', () => {
+    htmlElement.classList.toggle('dark');
+    if (document.documentElement.classList.contains('dark')) {
+        localStorage.setItem('theme', 'dark');
+    } else {
+        localStorage.setItem('theme', 'light');
+    }
+});
+
+

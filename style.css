@@ -53,7 +53,7 @@ main {
     flex: 50; /* Ocupa más espacio que el aside */
 }
 
-/* 5. Panel lateral (Aside) FIJO */
+/* 5. Panel lateral (Aside) */
 aside {
     flex: 3;
     min-width: 250px;
@@ -131,6 +131,13 @@ button:hover {
 .task-item:hover {
     box-shadow: var(--shadow);
 }
+
+.task-item span {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+}
+
 
 footer {
     text-align: center;
@@ -236,5 +243,21 @@ footer {
         flex: none;
         padding: 8px 14px;
         font-size: 16px;
+    }
+
+    .task-item {
+        flex-wrap: nowrap;
+        gap: 10px;
+    }
+
+    .task-item .actions {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 6px;
+    }
+
+    .task-item .actions button {
+        padding: 6px 10px;
+        font-size: 12px;
     }
 }

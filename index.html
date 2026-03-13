@@ -3,60 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> TaskFlow </title>
-    <link rel="stylesheet" href="style.css">
+    <title>TaskFlow - Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configuración de Tailwind para usar la clase 'dark'
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        // Definimos tu color lila principal para Tailwind
+                        'brand-purple': '#9b59b6', 
+                    }
+                }
+            }
+        }
+    </script>
 </head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen transition-colors duration-300">
 
-<body>
-        <header>
-           <h1>TaskFlow</h1>
-        </header>
-    <main>
-        <div id="tasks-section">
-             <section id="controls">
-                <input type="text" id="search-input" placeholder="Buscar tarea..." oninput="renderTasks(this.value)">
+    <header class="bg-brand-purple dark:bg-[#7d3c98] text-white p-6 shadow-lg flex justify-between items-center">
+        <h1 class="text-3xl font-bold">TaskFlow</h1>
+        <button id="dark-mode-toggle" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-full text-sm font-semibold transition-all flex items-center gap-2 border border-white/30">
+            <span class="dark:hidden">🌙 Modo Oscuro</span>
+            <span class="hidden dark:inline">☀️ Modo Claro</span>
+        </button>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-4 md:p-8 flex flex-col md:flex-row gap-8">
+        
+        <div class="flex-1 space-y-6">
+            
+            <section class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <input type="text" id="search-input" placeholder="Buscar tarea..." oninput="renderTasks(this.value)"
+                    class="w-full p-4 mb-5 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 focus:ring-2 focus:ring-brand-purple focus:border-brand-purple outline-none transition-all">
                 
-                <div class="filter-buttons">
-                    <button onclick="currentFilter='all'; updateApp()">Todas</button>
-                    <button onclick="currentFilter='pending'; updateApp()">Pendientes</button>
-                    <button onclick="currentFilter='completed'; updateApp()">Completadas</button>
+                <div class="flex flex-wrap gap-2.5 mb-5">
+                    <button onclick="currentFilter='all'; updateApp()" class="px-5 py-2.5 bg-brand-purple text-white rounded-xl text-sm font-semibold hover:bg-[#8e44ad] transition-all">Todas</button>
+                    <button onclick="currentFilter='pending'; updateApp()" class="px-5 py-2.5 bg-[#f1e6f7] dark:bg-[#341f41] text-brand-purple dark:text-[#c39bd3] rounded-xl text-sm font-semibold hover:bg-[#ebd3f1] transition-all">Pendientes</button>
+                    <button onclick="currentFilter='completed'; updateApp()" class="px-5 py-2.5 bg-[#f1e6f7] dark:bg-[#341f41] text-brand-purple dark:text-[#c39bd3] rounded-xl text-sm font-semibold hover:bg-[#ebd3f1] transition-all">Completadas</button>
                 </div>
 
-                <div class="global-actions">
-                <button type="button" onclick="completeAll()" class="btn-all">Marcar todas</button>
-                <button type="button" onclick="clearCompleted()" class="btn-clear">Limpiar completadas</button>
-            </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button onclick="completeAll()" class="flex-1  bg-[#2ecc71] hover:bg-[#27ae60] text-white py-3 rounded-xl font-bold transition-all">Marcar todas</button>
+                    <button onclick="clearCompleted()" class="flex-1 bg-[#95a5a6] hover:bg-[#7f8c8d] text-white py-3 rounded-xl font-bold transition-all">Limpiar completadas</button>
+                </div>
             </section>
 
-            <section id="add-task">
-                <h2>Gestión de Tareas</h2>
-                <form id="task-form">
-                    <label for="task-input">Nueva tarea:</label>
-                    <input type="text" id="task-input" placeholder="Escribe aqui" required>
-                    <button type="submit">Añadir Tarea</button>
+            <section class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-5">Gestión de Tareas</h2>
+                <form id="task-form" class="flex flex-col sm:flex-row gap-3">
+                    <div class="flex-1">
+                        <label for="task-input" class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1.5">Nueva tarea:</label>
+                        <input type="text" id="task-input" placeholder="Escribe aquí..." required
+                            class="w-full p-4 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 outline-none focus:ring-2 focus:ring-brand-purple focus:border-brand-purple transition-all">
+                    </div>
+                    <button type="submit" class="sm:self-end bg-brand-purple text-white px-8 py-4 rounded-xl font-bold hover:bg-[#8e44ad] transition-all">Añadir Tarea</button>
                 </form>
             </section>
 
-            <section id="tasks-container">
-                <h3>Lista de Tareas</h3>
-                <ul id="task-list">
-                </ul>
+            <section class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <h2 class="text-2xl font-bold mb-5 text-gray-900 dark:text-gray-100">Tus Tareas</h2>
+                <ul id="task-list" class="space-y-4">
+                    </ul>
             </section>
         </div>
-        <aside>
-                <h2> </h2>
-                <div>
-                    <p>Total: <span id="stat-total">0</span></p>
-                    <p>Completadas: <span id="stat-completed">0</span></p>
-                    <p>Pendientes: <span id="stat-pending">0</span></p>
+
+        <aside class="md:w-72 space-y-5">
+            <div class="bg-white dark:bg-gray-800 p-7 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 sticky top-10">
+                <h2 class="text-2xl font-bold mb-5 text-gray-900 dark:text-gray-100">Estadísticas</h2>
+                <div class="space-y-4.5 text-gray-700 dark:text-gray-300">
+                    <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                        <span>Total:</span>
+                        <span id="stat-total" class="font-extrabold text-2xl text-brand-purple dark:text-[#af7ac5]">0</span>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                        <span>Completadas:</span>
+                        <span id="stat-completed" class="font-extrabold text-2xl text-[#2ecc71]">0</span>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                        <span>Pendientes:</span>
+                        <span id="stat-pending" class="font-extrabold text-2xl text-[#f39c12]">0</span>
+                    </div>
                 </div>
-            </aside>
+            </div>
+        </aside>
     </main>
-    <footer>
-        <p>&copy; 2026 TaskFlow - Practicas Corner</p>
+
+    <footer class="text-center p-10 mt-10 border-t border-gray-100 dark:border-gray-800 text-gray-500 dark:text-gray-400">
+        <p>&copy; 2026 TaskFlow - Prácticas DAM/DAW Corner Estudios</p>
     </footer>
 
     <script src="script.js"></script>
 </body>
-
 </html>
