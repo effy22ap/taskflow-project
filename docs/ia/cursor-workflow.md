@@ -1,0 +1,2 @@
+# Flujo de Trabajo con Cursor / IDEs de IA
+Aquí se documentará cómo el uso de un IDE enfocado a la IA (como Cursor o las extensiones de VS Code) optimiza la escritura de código y la resolución de bugs.
