@@ -141,6 +141,81 @@ const editTaskTitle = (taskId) => {
     setTasks(tasks.map((t) => (t.id === taskId ? { ...t, title: validation.value } : t)));
 };
 
+/**
+ * Inicia edición inline de una tarea (reemplaza el texto por un input).
+ * Se guarda al pulsar Enter.
+ *
+ * @param {HTMLLIElement} li
+ * @param {string} taskId
+ */
+const startInlineEdit = (li, taskId) => {
+    const task = tasks.find((t) => t.id === taskId);
+    if (!task) return;
+
+    // Evitar múltiples ediciones simultáneas
+    const alreadyEditing = taskListEl.querySelector('input[data-editing="true"]');
+    if (alreadyEditing && alreadyEditing !== li.querySelector('input[data-editing="true"]')) {
+        /** @type {HTMLInputElement} */ (alreadyEditing).blur();
+    }
+
+    const titleSpan = li.querySelector('span[data-role="title"]');
+    if (!titleSpan) return;
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = task.title;
+    input.dataset.editing = 'true';
+    input.className =
+        'w-full p-2 rounded-lg border-2 border-brand-purple/40 dark:border-brand-purple/50 dark:bg-gray-700 outline-none focus:ring-2 focus:ring-brand-purple focus:border-brand-purple transition-all';
+
+    const previousText = task.title;
+
+    // Reemplazar el span por el input
+    titleSpan.replaceWith(input);
+    input.focus();
+    input.select();
+
+    const cancel = () => {
+        const restored = document.createElement('span');
+        restored.dataset.role = 'title';
+        restored.textContent = previousText;
+        if (task.completed) {
+            restored.style.textDecoration = 'line-through';
+            restored.style.color = 'gray';
+        }
+        input.replaceWith(restored);
+    };
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            cancel();
+            return;
+        }
+
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const validation = validateTaskTitle(input.value, { ignoreTaskId: taskId });
+            if (!validation.ok) {
+                // Mantener la edición inline, pero avisar
+                alert(validation.message);
+                input.focus();
+                input.select();
+                return;
+            }
+
+            setTasks(tasks.map((t) => (t.id === taskId ? { ...t, title: validation.value } : t)));
+        }
+    });
+
+    // Si pierde el foco sin Enter, cancelamos (evita guardar accidentalmente)
+    input.addEventListener('blur', () => {
+        // Si el blur ocurre porque se re-renderizó, el input ya no existe y no hace falta nada
+        if (!document.body.contains(input)) return;
+        cancel();
+    });
+};
+
 const completeAll = () => {
     if (!tasks.length) return;
     setTasks(tasks.map((t) => (t.completed ? t : { ...t, completed: true })));
@@ -179,6 +254,7 @@ const createTaskListItem = (task) => {
     li.dataset.taskId = task.id;
 
     const titleSpan = document.createElement('span');
+    titleSpan.dataset.role = 'title';
     titleSpan.textContent = task.title;
     if (task.completed) {
         titleSpan.style.textDecoration = 'line-through';
@@ -291,7 +367,7 @@ taskListEl.addEventListener('click', (e) => {
 
     const action = btn.dataset.action;
     if (action === 'toggle') toggleTaskCompleted(taskId);
-    if (action === 'edit') editTaskTitle(taskId);
+    if (action === 'edit') startInlineEdit(li, taskId);
     if (action === 'delete') deleteTask(taskId);
 });
 
