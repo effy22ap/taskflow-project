@@ -35,18 +35,18 @@
         <div class="flex-1 space-y-6">
             
             <section class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-                <input type="text" id="search-input" placeholder="Buscar tarea..." oninput="renderTasks(this.value)"
+                <input type="text" id="search-input" placeholder="Buscar tarea..."
                     class="w-full p-4 mb-5 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 focus:ring-2 focus:ring-brand-purple focus:border-brand-purple outline-none transition-all">
                 
                 <div class="flex flex-wrap gap-2.5 mb-5">
-                    <button onclick="currentFilter='all'; updateApp()" class="px-5 py-2.5 bg-brand-purple text-white rounded-xl text-sm font-semibold hover:bg-[#8e44ad] transition-all">Todas</button>
-                    <button onclick="currentFilter='pending'; updateApp()" class="px-5 py-2.5 bg-[#f1e6f7] dark:bg-[#341f41] text-brand-purple dark:text-[#c39bd3] rounded-xl text-sm font-semibold hover:bg-[#ebd3f1] transition-all">Pendientes</button>
-                    <button onclick="currentFilter='completed'; updateApp()" class="px-5 py-2.5 bg-[#f1e6f7] dark:bg-[#341f41] text-brand-purple dark:text-[#c39bd3] rounded-xl text-sm font-semibold hover:bg-[#ebd3f1] transition-all">Completadas</button>
+                    <button id="filter-all" data-filter="all" class="px-5 py-2.5 bg-brand-purple text-white rounded-xl text-sm font-semibold hover:bg-[#8e44ad] transition-all">Todas</button>
+                    <button id="filter-pending" data-filter="pending" class="px-5 py-2.5 bg-[#f1e6f7] dark:bg-[#341f41] text-brand-purple dark:text-[#c39bd3] rounded-xl text-sm font-semibold hover:bg-[#ebd3f1] transition-all">Pendientes</button>
+                    <button id="filter-completed" data-filter="completed" class="px-5 py-2.5 bg-[#f1e6f7] dark:bg-[#341f41] text-brand-purple dark:text-[#c39bd3] rounded-xl text-sm font-semibold hover:bg-[#ebd3f1] transition-all">Completadas</button>
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <button onclick="completeAll()" class="flex-1  bg-[#2ecc71] hover:bg-[#27ae60] text-white py-3 rounded-xl font-bold transition-all">Marcar todas</button>
-                    <button onclick="clearCompleted()" class="flex-1 bg-[#95a5a6] hover:bg-[#7f8c8d] text-white py-3 rounded-xl font-bold transition-all">Limpiar completadas</button>
+                    <button id="complete-all" class="flex-1  bg-[#2ecc71] hover:bg-[#27ae60] text-white py-3 rounded-xl font-bold transition-all">Marcar todas</button>
+                    <button id="clear-completed" class="flex-1 bg-[#95a5a6] hover:bg-[#7f8c8d] text-white py-3 rounded-xl font-bold transition-all">Limpiar completadas</button>
                 </div>
             </section>
 
@@ -57,6 +57,7 @@
                         <label for="task-input" class="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1.5">Nueva tarea:</label>
                         <input type="text" id="task-input" placeholder="Escribe aquí..." required
                             class="w-full p-4 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-700 outline-none focus:ring-2 focus:ring-brand-purple focus:border-brand-purple transition-all">
+                        <p id="task-error" class="mt-2 text-sm font-medium text-red-600 dark:text-red-400 hidden" role="status" aria-live="polite"></p>
                     </div>
                     <button type="submit" class="sm:self-end bg-brand-purple text-white px-8 py-4 rounded-xl font-bold hover:bg-[#8e44ad] transition-all">Añadir Tarea</button>
                 </form>
@@ -94,6 +95,6 @@
         <p>&copy; Hecho con ❤️ por Effy y Cursor.</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
