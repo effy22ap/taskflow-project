@@ -50,6 +50,7 @@ const taskForm = document.getElementById('task-form');
 const taskInput = document.getElementById('task-input');
 const taskError = document.getElementById('task-error');
 const taskListEl = document.getElementById('task-list');
+const pendingSummaryEl = document.getElementById('pending-summary');
 const statTotal = document.getElementById('stat-total');
 const statCompleted = document.getElementById('stat-completed');
 const statPending = document.getElementById('stat-pending');
@@ -59,6 +60,7 @@ const filterPendingBtn = document.getElementById('filter-pending');
 const filterCompletedBtn = document.getElementById('filter-completed');
 const completeAllBtn = document.getElementById('complete-all');
 const clearCompletedBtn = document.getElementById('clear-completed');
+const clearCompletedBottomBtn = document.getElementById('clear-completed-bottom');
 
 /** @param {string} message */
 const showFormError = (message) => {
@@ -294,6 +296,12 @@ const renderStats = () => {
     statPending.textContent = String(total - completed);
 };
 
+const renderPendingSummary = () => {
+    if (!pendingSummaryEl) return;
+    const pending = tasks.reduce((acc, t) => acc + (t.completed ? 0 : 1), 0);
+    pendingSummaryEl.textContent = `Tienes ${pending} tareas pendientes`;
+};
+
 const renderFilterState = () => {
     const buttons = [filterAllBtn, filterPendingBtn, filterCompletedBtn].filter(Boolean);
     buttons.forEach((btn) => {
@@ -323,6 +331,7 @@ const renderTaskList = () => {
 const render = () => {
     renderTaskList();
     renderStats();
+    renderPendingSummary();
     renderFilterState();
 };
 
@@ -353,6 +362,7 @@ filterPendingBtn.addEventListener('click', () => setActiveFilter('pending'));
 filterCompletedBtn.addEventListener('click', () => setActiveFilter('completed'));
 completeAllBtn.addEventListener('click', completeAll);
 clearCompletedBtn.addEventListener('click', clearCompleted);
+clearCompletedBottomBtn?.addEventListener('click', clearCompleted);
 
 taskListEl.addEventListener('click', (e) => {
     const target = /** @type {HTMLElement} */ (e.target);
