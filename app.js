@@ -11,6 +11,7 @@
  * @property {string} createdAtISO
  */
 
+const searchInput = document.getElementById('searchInput');
 const STORAGE_KEYS = {
     tasks: 'taskflow_tasks',
     theme: 'theme',

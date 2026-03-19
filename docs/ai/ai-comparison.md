@@ -40,3 +40,4 @@ Pedí implementar estas funciones:
 ## 4. Conclusiones Finales
 **ChatGPT** destaca en la **practica de ejercicios** (es más practico para iniciar en programacion, una sintaxis aveces mas larga y antigua).
 **Claude** destaca en la **calidad del código** (es más limpio y legible).
+

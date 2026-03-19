@@ -22,3 +22,4 @@ La función de autocompletado inteligente de Cursor me ha ayudado a:
 ## Conclusión
 Cursor me ha ayudado ha mejorar dos cosas de mi codigo, la primera fue asegurarme que las funciones usadas por mi " onclick/oinout" sea compatibles para que no me falle en el runntime, osea el script con la url de Tailwind fue puesta debajo de la funcion de script, me la reordeno y me ajusto mi scrpt.js para que currentFilter me de las funciones anteriores (" onclick/oinout") sean accesibles desde el Window, ya que al estar declaradas con const puede hjacer que no sea accesible desde el HTML, me cambio el currentFilter por 'var' y me expuso las funciones de window usadas por HTML.
 La segunda me ayudo a reordenar el tailwind.config para que se cargue antes del CDN de Tailwind.
+
