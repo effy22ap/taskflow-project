@@ -1,6 +1,7 @@
 // 1. Estado de la aplicacion
 let tasks = JSON.parse(localStorage.getItem('taskflow_tasks')) || [];
-let currentFilter = 'all'; // Filtro por defecto
+// Usamos `var` para que sea accesible desde handlers inline del HTML (onclick/oninput).
+var currentFilter = 'all'; // Filtro por defecto
 
 // 2. Selectores del DOM
 const taskForm = document.getElementById('task-form');
@@ -138,5 +139,15 @@ darkModeToggle.addEventListener('click', () => {
         localStorage.setItem('theme', 'light');
     }
 });
+
+// Exponer funciones requeridas por handlers inline en `index.html`.
+// Sin esto, algunas funciones no son accesibles si se declaran con `const/let`.
+window.renderTasks = renderTasks;
+window.updateApp = updateApp;
+window.toggleTask = toggleTask;
+window.editTask = editTask;
+window.deleteTask = deleteTask;
+window.completeAll = completeAll;
+window.clearCompleted = clearCompleted;
 
 
