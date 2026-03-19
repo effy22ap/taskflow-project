@@ -11,7 +11,6 @@
  * @property {string} createdAtISO
  */
 
-const searchInput = document.getElementById('searchInput');
 const STORAGE_KEYS = {
     tasks: 'taskflow_tasks',
     theme: 'theme',
@@ -225,8 +224,15 @@ const renderFilterState = () => {
         const filter = btn.dataset.filter;
         const isActive = filter === activeFilter;
         btn.setAttribute('aria-pressed', String(isActive));
-        btn.classList.toggle('ring-2', isActive);
-        btn.classList.toggle('ring-brand-purple', isActive);
+
+        // Estilos del botón activo vs inactivo (según requerimiento UI)
+        if (isActive) {
+            btn.classList.add('bg-purple-600', 'text-white');
+            btn.classList.remove('bg-purple-100', 'text-purple-700', 'hover:bg-purple-200');
+        } else {
+            btn.classList.remove('bg-purple-600', 'text-white');
+            btn.classList.add('bg-purple-100', 'text-purple-700', 'hover:bg-purple-200');
+        }
     });
 };
 
