@@ -1,0 +1,25 @@
+           ---Investigación de Herramientas de Backend---
+En el desarrollo de aplicaciones modernas, la comunicación entre el frontend y el backend requiere de herramientas que aseguren la eficiencia, la seguridad y la correcta documentación del sistema. Herramientas investigadas:
+
+1. Axios
+¿Qué es?: Es una librería cliente HTTP basada en promesas para el navegador y node.js.
+
+¿Para qué sirve?: Se utiliza para realizar peticiones a servicios externos (APIs). A diferencia de fetch (que viene nativo en JavaScript), Axios transforma automáticamente los datos a JSON, permite interceptar peticiones para añadir tokens de seguridad y tiene un mejor manejo de errores, lo que lo hace estándar en proyectos profesionales.
+
+2. Postman
+¿Qué es?: Es una plataforma interactiva para el desarrollo y prueba de APIs.
+
+¿Para qué sirve?: Permite a los desarrolladores probar las rutas del servidor (GET, POST, PUT, DELETE) sin necesidad de haber programado el frontend todavía. Es fundamental para verificar que el servidor devuelve los datos correctos y responde adecuadamente a las validaciones antes de integrar el código final.
+
+3. Sentry
+¿Qué es?: Es una plataforma de monitoreo de errores y rendimiento en tiempo real.
+
+¿Para qué sirve?: Cuando una aplicación está publicada y un usuario experimenta un fallo (un "crash"), Sentry captura automáticamente el error y envía un informe detallado a los desarrolladores con la línea exacta de código que falló. Esto permite arreglar problemas antes de que afecten a más usuarios.
+
+4. Swagger
+¿Qué es?: Es un conjunto de herramientas de código abierto construidas alrededor de la especificación OpenAPI.
+
+¿Para qué sirve?: Sirve para crear documentación interactiva de la API. Genera una página web donde cualquier persona puede ver qué rutas existen, qué datos debe enviar y qué respuesta esperar, permitiendo incluso probar las peticiones directamente desde el navegador de forma visual.
+
+
+LAP.

@@ -1,387 +1,175 @@
-/**
- * @typedef {'all' | 'pending' | 'completed'} TaskFilter
- *
- * @typedef Task
- * @property {string} id
- * @property {string} title
- * @property {boolean} completed
- * @property {string} createdAtISO
- */
+import { taskApi } from './server/src/api/cliente.js';
 
-const STORAGE_KEYS = {
-    tasks: 'taskflow_tasks',
-    theme: 'theme',
-};
-/**
- * Filtra las tareas según el estado seleccionado (todas, pendientes, completadas)
- * y el texto introducido en el buscador.
-/** @returns {Task[]} */
-const loadTasks = () => {
-    try {
-        const raw = localStorage.getItem(STORAGE_KEYS.tasks);
-        if (!raw) return [];
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : [];
-    } catch {
-        return [];
-    }
-};
-
-/** @param {Task[]} nextTasks */
-const saveTasks = (nextTasks) => {
-    localStorage.setItem(STORAGE_KEYS.tasks, JSON.stringify(nextTasks));
-};
-
-/** @returns {string} */
-const createId = () => {
-    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-        return crypto.randomUUID();
-    }
-    return String(Date.now());
-};
-
-/** @type {Task[]} */
-let tasks = loadTasks();
-/** @type {TaskFilter} */
+const STORAGE_KEYS = { theme: 'theme' };
+let tasks = [];
 let activeFilter = 'all';
 
-const taskForm = document.getElementById('task-form');
-const taskInput = document.getElementById('task-input');
-const taskError = document.getElementById('task-error');
-const taskListEl = document.getElementById('task-list');
-const pendingSummaryEl = document.getElementById('pending-summary');
-const statTotal = document.getElementById('stat-total');
-const statCompleted = document.getElementById('stat-completed');
-const statPending = document.getElementById('stat-pending');
-const searchInput = document.getElementById('search-input');
-const filterAllBtn = document.getElementById('filter-all');
-const filterPendingBtn = document.getElementById('filter-pending');
-const filterCompletedBtn = document.getElementById('filter-completed');
-const completeAllBtn = document.getElementById('complete-all');
-const clearCompletedBtn = document.getElementById('clear-completed');
-const clearCompletedBottomBtn = document.getElementById('clear-completed-bottom');
+/** @param {any} raw */
+const normalizeTask = (raw) => ({
+    id: String(raw.id || raw._id || Date.now()),
+    title: String(raw.title ?? ''),
+    completed: Boolean(raw.completed)
+});
 
-/** @param {string} message */
-const showFormError = (message) => {
-    if (!taskError) return;
-    taskError.textContent = message;
-    taskError.classList.remove('hidden');
+// --- CARGA Y GUARDADO ---
+const loadInitialData = async () => {
+    try {
+        const data = await taskApi.getAll();
+        tasks = Array.isArray(data) ? data.map(normalizeTask) : [];
+        render();
+    } catch (e) { console.error("Error al cargar:", e); }
 };
 
-const clearFormError = () => {
-    if (!taskError) return;
-    taskError.textContent = '';
-    taskError.classList.add('hidden');
+// --- ACCIONES DEL SERVIDOR ---
+const addTask = async (title) => {
+    try {
+        const newTask = await taskApi.create(title);
+        tasks.push(normalizeTask(newTask));
+        render();
+    } catch (e) { alert("Error al guardar en el servidor"); }
 };
 
-/**
- * @param {string} titleRaw
- * @param {{ ignoreTaskId?: string }} [options]
- * @returns {{ ok: true, value: string } | { ok: false, message: string }}
- */
-const validateTaskTitle = (titleRaw, options = {}) => {
-    const title = titleRaw.trim();
-    if (!title) return { ok: false, message: 'La tarea no puede estar vacía.' };
-    if (title.length < 2) return { ok: false, message: 'La tarea debe tener al menos 2 caracteres.' };
-    if (title.length > 80) return { ok: false, message: 'La tarea no puede superar 80 caracteres.' };
-    if (!/[A-Za-zÀ-ÿ0-9]/.test(title)) return { ok: false, message: 'La tarea debe contener al menos una letra o número.' };
-
-    const normalized = title.toLocaleLowerCase();
-    const isDuplicate = tasks.some((t) => {
-        if (options.ignoreTaskId && t.id === options.ignoreTaskId) return false;
-        return t.title.trim().toLocaleLowerCase() === normalized;
-    });
-    if (isDuplicate) return { ok: false, message: 'Ya existe una tarea con ese nombre.' };
-
-    return { ok: true, value: title };
+const deleteTask = async (id) => {
+    try {
+        await taskApi.delete(id);
+        tasks = tasks.filter(t => t.id !== id);
+        render();
+    } catch (e) { console.error(e); }
 };
 
-/** @param {Task[]} next */
-const setTasks = (next) => {
-    tasks = next;
-    saveTasks(tasks);
-    render();
-};
-/**
- * Valida que el título de una tarea no esté vacío, no sea demasiado largo 
- * y no esté duplicado en la lista actual.
- * @param {string} title - El texto a validar.
- * @returns {string | null} Un mensaje de error si no es válido, o null si es correcto.
- */
-/** @param {string} title */
-const addTask = (title) => {
-    /** @type {Task} */
-    const newTask = {
-        id: createId(),
-        title,
-        completed: false,
-        createdAtISO: new Date().toISOString(),
-    };
-    setTasks([...tasks, newTask]);
-};
-
-/** @param {string} taskId */
-const deleteTask = (taskId) => {
-    setTasks(tasks.filter((t) => t.id !== taskId));
-};
-
-/** @param {string} taskId */
-const toggleTaskCompleted = (taskId) => {
-    setTasks(tasks.map((t) => (t.id === taskId ? { ...t, completed: !t.completed } : t)));
-};
-
-/**
- * Inicia edición inline de una tarea (reemplaza el texto por un input).
- * Se guarda al pulsar Enter.
- *
- * @param {HTMLLIElement} li
- * @param {string} taskId
- */
-const startInlineEdit = (li, taskId) => {
-    const task = tasks.find((t) => t.id === taskId);
+const toggleTask = async (id) => {
+    const task = tasks.find(t => t.id === id);
     if (!task) return;
+    try {
+        const updated = await taskApi.update(id, { completed: !task.completed });
+        tasks = tasks.map(t => t.id === id ? normalizeTask(updated) : t);
+        render();
+    } catch (e) { console.error(e); }
+};
 
-    // Evitar múltiples ediciones simultáneas
-    const alreadyEditing = taskListEl.querySelector('input[data-editing="true"]');
-    if (alreadyEditing && alreadyEditing !== li.querySelector('input[data-editing="true"]')) {
-        /** @type {HTMLInputElement} */ (alreadyEditing).blur();
-    }
-
-    const titleSpan = li.querySelector('span[data-role="title"]');
-    if (!titleSpan) return;
+// --- EDICIÓN INLINE ---
+const startInlineEdit = (li, taskId) => {
+    const task = tasks.find(t => t.id === taskId);
+    const titleSpan = li.querySelector('[data-role="title"]');
+    if (!task || !titleSpan) return;
 
     const input = document.createElement('input');
-    input.type = 'text';
     input.value = task.title;
-    input.dataset.editing = 'true';
-    input.className =
-        'w-full p-2 rounded-lg border-2 border-brand-purple/40 dark:border-brand-purple/50 dark:bg-gray-700 outline-none focus:ring-2 focus:ring-brand-purple focus:border-brand-purple transition-all';
-
-    const previousText = task.title;
-
-    titleSpan.replaceWith(input);
-    input.focus();
-    input.select();
-
-    const cancel = () => {
-        const restored = document.createElement('span');
-        restored.dataset.role = 'title';
-        restored.textContent = previousText;
-        if (task.completed) {
-            restored.style.textDecoration = 'line-through';
-            restored.style.color = 'gray';
+    input.className = "flex-1 bg-white dark:bg-gray-700 border-2 border-brand-purple rounded-lg px-2 py-1 outline-none text-gray-800 dark:text-white";
+    
+    const saveEdit = async () => {
+        const newTitle = input.value.trim();
+        if (newTitle && newTitle !== task.title) {
+            try {
+                const updated = await taskApi.update(taskId, { title: newTitle });
+                tasks = tasks.map(t => t.id === taskId ? normalizeTask(updated) : t);
+            } catch (e) { console.error(e); }
         }
-        input.replaceWith(restored);
+        render();
     };
 
     input.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            e.preventDefault();
-            cancel();
-            return;
-        }
-
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const validation = validateTaskTitle(input.value, { ignoreTaskId: taskId });
-            if (!validation.ok) {
-                alert(validation.message);
-                input.focus();
-                input.select();
-                return;
-            }
-
-            setTasks(tasks.map((t) => (t.id === taskId ? { ...t, title: validation.value } : t)));
-        }
+        if (e.key === 'Enter') saveEdit();
+        if (e.key === 'Escape') render();
     });
 
-    input.addEventListener('blur', () => {
-        if (!document.body.contains(input)) return;
-        cancel();
-    });
+    input.addEventListener('blur', saveEdit);
+    titleSpan.replaceWith(input);
+    input.focus();
 };
 
-const completeAll = () => {
-    if (!tasks.length) return;
-    setTasks(tasks.map((t) => (t.completed ? t : { ...t, completed: true })));
-};
-
-const clearCompleted = () => {
-    setTasks(tasks.filter((t) => !t.completed));
-};
-
-/** @param {TaskFilter} nextFilter */
-const setActiveFilter = (nextFilter) => {
-    activeFilter = nextFilter;
-    render();
-};
-
-/** @returns {Task[]} */
-const getVisibleTasks = () => {
-    const query = (searchInput?.value ?? '').trim().toLocaleLowerCase();
-
-    return tasks.filter((t) => {
-        const matchesQuery = !query || t.title.toLocaleLowerCase().includes(query);
-        if (!matchesQuery) return false;
-        if (activeFilter === 'pending') return !t.completed;
-        if (activeFilter === 'completed') return t.completed;
-        return true;
-    });
-};
-
-/**
- * @param {Task} task
- * @returns {HTMLLIElement}
- */
-const createTaskListItem = (task) => {
-    const li = document.createElement('li');
-    li.className = `task-item ${task.completed ? 'completed' : ''}`;
-    li.dataset.taskId = task.id;
-
-    const titleSpan = document.createElement('span');
-    titleSpan.dataset.role = 'title';
-    titleSpan.textContent = task.title;
-    if (task.completed) {
-        titleSpan.style.textDecoration = 'line-through';
-        titleSpan.style.color = 'gray';
-    }
-
-    const actions = document.createElement('div');
-    actions.className = 'actions';
-
-    const toggleBtn = document.createElement('button');
-    toggleBtn.type = 'button';
-    toggleBtn.dataset.action = 'toggle';
-    toggleBtn.textContent = task.completed ? '↩️' : '✅';
-
-    const editBtn = document.createElement('button');
-    editBtn.type = 'button';
-    editBtn.dataset.action = 'edit';
-    editBtn.textContent = '✏️';
-
-    const deleteBtn = document.createElement('button');
-    deleteBtn.type = 'button';
-    deleteBtn.dataset.action = 'delete';
-    deleteBtn.textContent = '🗑️';
-    deleteBtn.style.backgroundColor = '#e74c3c';
-    deleteBtn.style.color = 'white';
-
-    actions.append(toggleBtn, editBtn, deleteBtn);
-    li.append(titleSpan, actions);
-    return li;
-};
-
-const renderStats = () => {
-    const total = tasks.length;
-    const completed = tasks.reduce((acc, t) => acc + (t.completed ? 1 : 0), 0);
-    statTotal.textContent = String(total);
-    statCompleted.textContent = String(completed);
-    statPending.textContent = String(total - completed);
-};
-
-const renderPendingSummary = () => {
-    if (!pendingSummaryEl) return;
-    const pending = tasks.reduce((acc, t) => acc + (t.completed ? 0 : 1), 0);
-    pendingSummaryEl.textContent = `Tienes ${pending} tareas pendientes`;
-};
-
-const renderFilterState = () => {
-    const buttons = [filterAllBtn, filterPendingBtn, filterCompletedBtn].filter(Boolean);
-    buttons.forEach((btn) => {
-        const filter = btn.dataset.filter;
-        const isActive = filter === activeFilter;
-        btn.setAttribute('aria-pressed', String(isActive));
-
-        if (isActive) {
-            btn.classList.add('bg-purple-600', 'text-white');
-            btn.classList.remove('bg-purple-100', 'text-purple-700', 'hover:bg-purple-200');
-        } else {
-            btn.classList.remove('bg-purple-600', 'text-white');
-            btn.classList.add('bg-purple-100', 'text-purple-700', 'hover:bg-purple-200');
-        }
-    });
-};
-
-const renderTaskList = () => {
-    taskListEl.innerHTML = '';
-    const visible = getVisibleTasks();
-    const frag = document.createDocumentFragment();
-    visible.forEach((t) => frag.appendChild(createTaskListItem(t)));
-    taskListEl.appendChild(frag);
-};
-
+// --- RENDERIZADO ---
 const render = () => {
-    renderTaskList();
-    renderStats();
-    renderPendingSummary();
-    renderFilterState();
+    const listEl = document.getElementById('task-list');
+    if (!listEl) return;
+
+    const query = (document.getElementById('search-input')?.value ?? '').toLowerCase();
+    const visible = tasks.filter(t => {
+        const matches = t.title.toLowerCase().includes(query);
+        if (activeFilter === 'pending') return matches && !t.completed;
+        if (activeFilter === 'completed') return matches && t.completed;
+        return matches;
+    });
+
+    listEl.innerHTML = '';
+    visible.forEach(task => {
+        const li = document.createElement('li');
+        li.dataset.taskId = task.id;
+        li.className = `flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all ${task.completed ? 'opacity-60' : ''}`;
+        
+        li.innerHTML = `
+            <div class="flex-1 mr-4">
+                <span data-role="title" class="cursor-pointer font-medium ${task.completed ? 'line-through text-gray-400' : 'text-gray-700 dark:text-gray-200'}">
+                    ${task.title}
+                </span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button data-action="toggle" class="relative z-10 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-xl">
+                    <span class="pointer-events-none">${task.completed ? '↩️' : '✅'}</span>
+                </button>
+                <button data-action="edit" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-xl">
+                    <span class="pointer-events-none">✏️</span>
+                </button>
+                <button data-action="delete" class="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors shadow-md text-xl">
+                    <span class="pointer-events-none">🗑️</span>
+                </button>
+            </div>
+        `;
+        listEl.appendChild(li);
+    });
+    // Actualizar estadísticas
+    document.getElementById('stat-total').textContent = tasks.length;
+    document.getElementById('stat-pending').textContent = tasks.filter(t => !t.completed).length;
+    document.getElementById('stat-completed').textContent = tasks.filter(t => t.completed).length;
+    document.getElementById('pending-summary').textContent = `Tienes ${tasks.filter(t => !t.completed).length} tareas pendientes`;
 };
+// --- INICIALIZACIÓN  ---
+document.addEventListener('DOMContentLoaded', () => {
+    loadInitialData();
 
-taskForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    clearFormError();
+    // Formulario de añadir
+    document.getElementById('task-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = document.getElementById('task-input');
+        if (input.value.trim()) {
+            addTask(input.value.trim());
+            input.value = '';
+        }
+    });
 
-    const validation = validateTaskTitle(taskInput.value);
-    if (!validation.ok) {
-        showFormError(validation.message);
-        taskInput.focus();
-        return;
-    }
+    // Delegación
+document.getElementById('task-list')?.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-action]');
+        const li = e.target.closest('li');
+        
+        if (!li) return;
+        const id = li.dataset.taskId;
 
-    addTask(validation.value);
-    taskInput.value = '';
-    taskInput.focus();
+        if (btn) {
+            e.preventDefault();
+            e.stopPropagation();
+            const action = btn.dataset.action;
+            if (action === 'toggle') toggleTask(id); // Llamamos a la función correcta
+            else if (action === 'delete') deleteTask(id);
+            else if (action === 'edit') startInlineEdit(li, id);
+            return; 
+        }
+
+        if (e.target.dataset.role === 'title') {
+            startInlineEdit(li, id);
+        }
+    });
+    // Modo Oscuro
+    const darkModeBtn = document.getElementById('dark-mode-toggle');
+    const applyTheme = (theme) => {
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        localStorage.setItem(STORAGE_KEYS.theme, theme);
+    };
+
+    darkModeBtn?.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.contains('dark');
+        applyTheme(isDark ? 'light' : 'dark');
+    });
+
+    applyTheme(localStorage.getItem(STORAGE_KEYS.theme) === 'dark' ? 'dark' : 'light');
 });
-
-taskInput.addEventListener('input', () => {
-    if (taskError && !taskError.classList.contains('hidden')) clearFormError();
-});
-
-searchInput.addEventListener('input', () => render());
-
-filterAllBtn.addEventListener('click', () => setActiveFilter('all'));
-filterPendingBtn.addEventListener('click', () => setActiveFilter('pending'));
-filterCompletedBtn.addEventListener('click', () => setActiveFilter('completed'));
-completeAllBtn.addEventListener('click', completeAll);
-clearCompletedBtn.addEventListener('click', clearCompleted);
-clearCompletedBottomBtn?.addEventListener('click', clearCompleted);
-
-taskListEl.addEventListener('click', (e) => {
-    const target = /** @type {HTMLElement} */ (e.target);
-    const btn = target.closest('button[data-action]');
-    if (!btn) return;
-
-    const li = btn.closest('li[data-task-id]');
-    if (!li) return;
-
-    const taskId = li.dataset.taskId;
-    if (!taskId) return;
-
-    const action = btn.dataset.action;
-    if (action === 'toggle') toggleTaskCompleted(taskId);
-    if (action === 'edit') startInlineEdit(li, taskId);
-    if (action === 'delete') deleteTask(taskId);
-});
-
-// Modo oscuro / claro (robusto)
-const darkModeToggle = document.getElementById('dark-mode-toggle');
-const htmlElement = document.documentElement;
-const bodyElement = document.body;
-
-/** @param {'dark' | 'light'} theme */
-const applyTheme = (theme) => {
-    const isDark = theme === 'dark';
-    htmlElement.classList.toggle('dark', isDark);
-    bodyElement?.classList.toggle('dark', isDark);
-    localStorage.setItem(STORAGE_KEYS.theme, theme);
-};
-
-const storedTheme = localStorage.getItem(STORAGE_KEYS.theme);
-applyTheme(storedTheme === 'dark' ? 'dark' : 'light');
-
-darkModeToggle?.addEventListener('click', () => {
-    const nextTheme = htmlElement.classList.contains('dark') ? 'light' : 'dark';
-    applyTheme(nextTheme);
-});
-
-render();
