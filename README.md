@@ -19,12 +19,19 @@
 3. **Buscar:** Si tienes muchas tareas, usa la barra de búsqueda superior para filtrar por palabras clave.
 4. **Completar:** Haz clic en el círculo de la izquierda para tachar una tarea terminada.
 
+##📖 Ejemplo de Interacción con la API
+Para interactuar con nuestras tareas, el frontend realiza las siguientes llamadas:
+
+-Obtener Tareas (GET): taskApi.getAll() solicita la lista completa al iniciar.
+-Crear Tarea (POST): taskApi.create(title) envía un nuevo objeto al servidor.
+-Actualizar (PUT/PATCH): taskApi.update(id, data) modifica el estado (completar o editar nombre).
+-Eliminar (DELETE): taskApi.delete(id) borra permanentemente la tarea del servidor.
+
 ## 🛠️ Tecnologías Utilizadas
-- **HTML5 & JavaScript (ES6+)**
-- **Tailwind CSS** (Framework de estilos)
-- **Git & GitHub** (Control de versiones)
-- **AI Tools:** ChatGPT,Claude, Flash & Cursor IDE.
--**Comunicación:** API Fetch nativa.
+🌐 Frontend: HTML5, JavaScript (ES6+), Tailwind CSS.
+⚙️ Backend: Node.js, Express.
+🔌 Comunicación: API Fetch nativa.
+🧠 Herramientas de IA: Desarrollo asistido por Gemini & Cursor para optimización de lógica y diseño.
 
 ## 📖 Documentación Técnica
 El proyecto cuenta con una carpeta detallada de documentación sobre el uso de IA en `docs/ai/`:
@@ -37,13 +44,7 @@ Este proyecto utiliza una arquitectura de **Separación de Responsabilidades**:
 - **Frontend:** Vanilla JavaScript con gestión de estado en memoria y comunicación asíncrona.
 - **Backend:** API REST construida con Node.js y Express.
 - **Comunicación:** Uso de `fetch` API para peticiones HTTP (GET, POST, DELETE).
-
-## 🛠️ Middlewares y Seguridad
-- **CORS:** Implementado para permitir peticiones desde el origen del frontend.
-- **JSON Parser:** Middleware para procesar cuerpos de mensajes complejos.
-- **Manejador de Errores:** Sistema global que intercepta excepciones y devuelve códigos HTTP semánticos (400, 404, 500).
-
-🏗️ 1. Arquitectura del Sistema
+##🏗️ Arquitectura del Sistema
 El proyecto sigue un patrón de diseño desacoplado donde el frontend y el backend se comunican de forma transparente:
 
 📂 Raíz del Proyecto: Contiene los archivos principales de la interfaz (index.html y script.js).
@@ -57,6 +58,13 @@ El proyecto sigue un patrón de diseño desacoplado donde el frontend y el backe
 - `GET /api/v1/tasks`: Recupera todas las tareas.
 - `POST /api/v1/tasks`: Crea una nueva tarea (requiere `{ "title": "..." }`).
 - `DELETE /api/v1/tasks/:id`: Elimina una tarea por su ID único.
+
+## 🛠️ Middlewares y Seguridad
+- **CORS:** Implementado para permitir peticiones desde el origen del frontend.
+- **JSON Parser:** Middleware para procesar cuerpos de mensajes complejos.
+- **Manejador de Errores:** Sistema global que intercepta excepciones y devuelve códigos HTTP semánticos (400, 404, 500).
+
+
 ---
 Hecho con ❤️ y un toque de IA.
 
