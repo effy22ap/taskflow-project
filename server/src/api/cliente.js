@@ -1,4 +1,6 @@
-const API_URL = 'https://taskflow-project-effy22aps-projects.vercel.app/api';
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3000/api'
+    : 'https://taskflow-project-effy22aps-projects.vercel.app/api';
 
 export const taskApi = {
     async getAll() {
