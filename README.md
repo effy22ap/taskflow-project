@@ -19,7 +19,7 @@
 3. **Buscar:** Si tienes muchas tareas, usa la barra de búsqueda superior para filtrar por palabras clave.
 4. **Completar:** Haz clic en el círculo de la izquierda para tachar una tarea terminada.
 
-##📖 Ejemplo de Interacción con la API
+## 📖 Ejemplo de Interacción con la API
 Para interactuar con nuestras tareas, el frontend realiza las siguientes llamadas:
 
 -Obtener Tareas (GET): taskApi.getAll() solicita la lista completa al iniciar.
@@ -28,10 +28,10 @@ Para interactuar con nuestras tareas, el frontend realiza las siguientes llamada
 -Eliminar (DELETE): taskApi.delete(id) borra permanentemente la tarea del servidor.
 
 ## 🛠️ Tecnologías Utilizadas
-🌐 Frontend: HTML5, JavaScript (ES6+), Tailwind CSS.
-⚙️ Backend: Node.js, Express.
-🔌 Comunicación: API Fetch nativa.
-🧠 Herramientas de IA: Desarrollo asistido por Gemini & Cursor para optimización de lógica y diseño.
+-🌐 Frontend: HTML5, JavaScript (ES6+), Tailwind CSS.
+-⚙️ Backend: Node.js, Express.
+-🔌 Comunicación: API Fetch nativa.
+-🧠 Herramientas de IA: Desarrollo asistido por Gemini & Cursor para optimización de lógica y diseño.
 
 ## 📖 Documentación Técnica
 El proyecto cuenta con una carpeta detallada de documentación sobre el uso de IA en `docs/ai/`:
