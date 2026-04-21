@@ -1,4 +1,4 @@
-const API_URL = 'https://taskflow-project-effy22aps-projects.vercel.app/';
+const API_URL = 'https://taskflow-project-effy22aps-projects.vercel.app/api';
 
 export const taskApi = {
     async getAll() {
