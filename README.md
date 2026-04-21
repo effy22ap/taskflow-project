@@ -20,17 +20,20 @@
 4. **Completar:** Haz clic en el círculo de la izquierda para tachar una tarea terminada.
 
 ## 📖 Ejemplo de Interacción con la API
+
 Para interactuar con nuestras tareas, el frontend realiza las siguientes llamadas:
-**-Obtener Tareas (GET):** taskApi.getAll() solicita la lista completa al iniciar.
-**-Crear Tarea (POST):** taskApi.create(title) envía un nuevo objeto al servidor.
-**-Actualizar (PUT/PATCH):** taskApi.update(id, data) modifica el estado (completar o editar nombre).
-**-Eliminar (DELETE):** taskApi.delete(id) borra permanentemente la tarea del servidor.
+
+* **Obtener Tareas (GET)**: `taskApi.getAll()` solicita la lista completa al iniciar.
+* **Crear Tarea (POST)**: `taskApi.create(title)` envía un nuevo objeto al servidor.
+* **Actualizar (PUT/PATCH)**: `taskApi.update(id, data)` modifica el estado.
+* **Eliminar (DELETE)**: `taskApi.delete(id)` borra la tarea permanentemente.
 
 ## 🛠️ Tecnologías Utilizadas
-**-🌐 Frontend:** HTML5, JavaScript (ES6+), Tailwind CSS.
-**-⚙️ Backend:** Node.js, Express.
-**-🔌 Comunicación:** API Fetch nativa.
-**-🧠 Herramientas de IA:** Desarrollo asistido por Gemini & Cursor para optimización de lógica y diseño.
+
+* 🌐 **Frontend**: HTML5, JavaScript (ES6+), Tailwind CSS.
+* ⚙️ **Backend**: Node.js, Express.
+* 🔌 **Comunicación**: API Fetch nativa.
+* 🧠 **Herramientas de IA**: Desarrollo asistido por Gemini & Cursor.
 
 ## 📖 Documentación Técnica
 El proyecto cuenta con una carpeta detallada de documentación sobre el uso de IA en `docs/ai/`:
