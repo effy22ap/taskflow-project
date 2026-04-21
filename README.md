@@ -44,7 +44,8 @@ Este proyecto utiliza una arquitectura de **Separación de Responsabilidades**:
 - **Frontend:** Vanilla JavaScript con gestión de estado en memoria y comunicación asíncrona.
 - **Backend:** API REST construida con Node.js y Express.
 - **Comunicación:** Uso de `fetch` API para peticiones HTTP (GET, POST, DELETE).
-##🏗️ Arquitectura del Sistema
+
+## 🏗️ Arquitectura del Sistema
 El proyecto sigue un patrón de diseño desacoplado donde el frontend y el backend se comunican de forma transparente:
 
 📂 Raíz del Proyecto: Contiene los archivos principales de la interfaz (index.html y script.js).
